@@ -1338,7 +1338,7 @@ DWORD WINAPI HotkeyThreadProc(LPVOID) {
   // Message loop - use MsgWaitForMultipleObjects to allow periodic check for stop signal
   while (!g_stopHotkeyThread) {
     // Wait for message or timeout (100ms) to check stop flag
-    DWORD waitResult = MsgWaitForMultipleObjects(0, nullptr, FALSE, 100, QS_ALLINPUT);
+    DWORD waitResult = MsgWaitForMultipleObjects(0, nullptr, FALSE, INFINITE, QS_ALLINPUT);
 
     if (waitResult == WAIT_OBJECT_0) {
       // Messages available
