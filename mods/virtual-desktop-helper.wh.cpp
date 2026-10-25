@@ -2,7 +2,7 @@
 // @id              virtual-desktop-helper
 // @name            Virtual Desktop Helper
 // @description     Switch virtual desktops, move windows between desktops, and pin windows with customizable hotkeys
-// @version         2.5.0
+// @version         2.5.1
 // @author          u2x1
 // @github          https://github.com/u2x1
 // @include         windhawk.exe
@@ -15,32 +15,40 @@
 /*
 # Virtual Desktop Helper
 
-A comprehensive virtual desktop management tool for Windows 10/11.
+A comprehensive virtual desktop management tool for Windows 10/11, with additional hotkeys for moving the active window to the previous or next desktop.
 
 Based on VD.ahk by FuPeiJiang.
 
 ## Features
 
 ### Virtual Desktop Management
-- **Quick Switch**: Jump directly to any desktop (1-9) with a single hotkey
-- **Move Windows**: Send the active window to any desktop instantly
-- **Previous Desktop**: Switch to the previous desktop by index (wraps around)
-- **Next Desktop**: Switch to the next desktop by index (wraps around)
-- **Last-used Desktop**: Return to the desktop you were using immediately before the current one
-- **Pin Windows**: Pin/unpin windows to appear on all desktops
+
+- **Quick Switch**: Jump directly to any desktop (1-9) with a single hotkey.
+- **Move Windows**: Send the active window to any desktop instantly.
+- **Previous Desktop**: Switch to the previous desktop by index (wraps around).
+- **Next Desktop**: Switch to the next desktop by index (wraps around).
+- **Last-used Desktop**: Return to the desktop you were using immediately before the current one.
+- **Pin Windows**: Pin/unpin windows to appear on all desktops.
+- **Move Application window to previous desktop**: Move the active window one desktop backward by index, switch to that desktop, and focus the moved window.
+- **Move Application window to next desktop**: Move the active window one desktop forward by index, switch to that desktop, and focus the moved window.
+- Adjacent movement wraps around within the configured desktop range.
+- The destination desktop must already exist. This feature does not create desktops automatically.
+- These adjacent-move actions always switch to the destination desktop and focus the moved window, independently of the setting used by numbered window moves.
 
 ## Default Hotkeys
 
 | Action | Default Hotkey |
-|--------|----------------|
+| --- | --- |
 | Switch to desktop 1-9 | `Alt + 1-9` |
 | Move window to desktop 1-9 | `Alt + Shift + 1-9` |
-| Switch to previous desktop by index | `Alt + Z` (configurable modifier) |
-| Switch to next desktop by index | `Alt + X` (configurable modifier) |
-| Switch to last-used desktop | `Alt + Q` (configurable modifier) |
-| Pin/unpin window | `Alt + P` (configurable modifier) |
+| Switch to previous desktop by index | `Alt + Z` |
+| Switch to next desktop by index | `Alt + X` |
+| Move window to previous desktop, then switch and focus it | `Alt + Shift + Z` |
+| Move window to next desktop, then switch and focus it | `Alt + Shift + X` |
+| Switch to last-used desktop | `Alt + Q` |
+| Pin/unpin window | `Alt + P` |
 
-Note: The modifier for all hotkey groups can be freely configured using any combination of Alt, Ctrl, Shift, and Win keys. Previous/next desktop cycling is limited by the "Maximum Desktops" setting.
+The modifier for each hotkey group can be configured using any combination of Alt, Ctrl, Shift, and Win. Previous/next desktop cycling and adjacent window movement use the **Maximum Desktops** setting as their upper bound.
 
 **⚠️ Win key note:** Win+number combinations are used by the Windows taskbar and may conflict with numbered desktop hotkeys. Choose another modifier if needed.
 
@@ -50,48 +58,66 @@ Settings are organized by feature. Each feature has an **Enable** toggle and its
 
 ### Hotkey Groups
 
-- **[Switch Desktop]** - Alt+1-9 to switch desktops
-- **[Move Window]** - Alt+Shift+1-9 to move windows between desktops
-- **[Previous/Next/Last-used Desktop]** - Previous/next by index and last-used desktop toggle (Alt+Z, Alt+X, Alt+Q by default)
-- **[Pin Window]** - Pin/unpin windows to all desktops (Alt+P by default)
+- **[Switch Desktop]** — switch to desktops 1-9.
+- **[Move Window]** — move windows to desktops 1-9, plus the adjacent previous/next desktop shortcuts.
+- **[Previous/Next/Last-used Desktop]** — switch by index or return to the last-used desktop.
+- **[Pin Window]** — pin/unpin windows to all desktops.
+
 ### Key Binding Format
 
-The Previous, Next, Last-used, and Pin key fields accept a single character or a supported special key. **Leave an individual key field blank to disable only that hotkey.**
+The Previous, Next, Last-used, Pin, and adjacent-move key fields accept a single character or a supported special key. **Leave an individual key field blank to disable only that hotkey.**
 
-**Letters & Numbers:** A-Z, 0-9  
-**Special Characters:**
+**Letters and numbers:** `A-Z`, `0-9`
+
+**Special characters:**
+
 - `` ` `` (backtick), `~` (tilde)
 - `-` (minus), `=` (equals)
 - `[`, `]`, `\` (backslash)
 - `;` (semicolon), `'` (quote)
 - `,` (comma), `.` (period), `/` (slash)
-- **Shifted-symbol aliases:** `!@#$%^&*()_+{}|:"<>?` are accepted as aliases for their underlying physical keys; they do not add Shift automatically.
+- **Shifted-symbol aliases:** `!@#$%^&*()_+{}|:"<>?` are aliases for their underlying physical keys; they do not add Shift automatically.
 
-**Special Keys:** Type the name: `Tab`, `Space`, `Enter`
+**Special keys:** `Tab`, `Space`, `Enter`
 
 **Examples:**
-- Enter `F` → binds to Alt+F
-- Enter `~` → binds to Alt+` (backtick)
-- Enter `!` → binds to Alt+1; include `shift` in the modifier if you want Alt+Shift+1
-- Enter `Tab` → binds to Alt+Tab
-- Leave `Last-used Desktop Key` blank → disables Alt+Q while keeping Previous/Next enabled
+
+- Enter `F` to bind the configured modifier plus F.
+- Enter `~` to bind the configured modifier plus the backtick key.
+- Enter `!` to bind the configured modifier plus the 1 key; include Shift in the modifier if you want Alt+Shift+1.
+- Enter `Tab` to bind the configured modifier plus Tab.
+- Leave `Last-used Desktop Key` blank to disable only that hotkey.
+
+### Relevant Settings
+
+- **Move-window hotkey modifiers**: Modifiers for numbered and adjacent window moves; defaults to `Alt+Shift`.
+- **Move window to previous desktop key**: Defaults to `Z`.
+- **Move window to next desktop key**: Defaults to `X`.
+- **Switch to destination after moving a window**: Controls whether numbered window moves switch to the destination. Adjacent window moves always switch and focus the moved window.
+- **Maximum Desktops**: Upper bound used for numbered hotkeys and adjacent-desktop cycling.
 
 ## Windows Version Support
 
-Select your Windows version in settings for correct functionality:
-- Windows 10 (Build < 20348)
-- Windows 10 (Build 20348 - 21999)
-- Windows 11 (Build 22000 - 22482)
-- Windows 11 (Build 22621/22631/23H2)
-- Windows 11 (Build 26100+ / 24H2)
+Select the matching Windows version in settings for the correct virtual desktop interface:
+
+- Windows 10 (build below 20348)
+- Windows 10 (build 20348-21999)
+- Windows 11 (build 22000-22482)
+- Windows 11 (build 22621/22631/23H2)
+- Windows 11 (build 26100+ / 24H2)
+
+The virtual desktop interfaces used by the mod are undocumented and can vary between Windows builds.
 
 ## Credits
 
-Changes in v2.5.0 contributed by [Meteoni](https://github.com/meteoni).
+- Original project based on VD.ahk by FuPeiJiang.
+- Original Virtual Desktop Helper contributions by u2x1.
+- Changes in v2.5.0 contributed by [Meteoni](https://github.com/meteoni).
+- Adjacent-desktop window movement and related improvements by [niteshkmdev](https://github.com/niteshkmdev).
 
 ## See Also
 
-- [Tiling Helper](https://windhawk.net/mods/tiling-helper) - Tiling window management
+- [Tiling Helper](https://windhawk.net/mods/tiling-helper) — tiling window management.
 
 */
 // ==/WindhawkModReadme==
@@ -99,67 +125,45 @@ Changes in v2.5.0 contributed by [Meteoni](https://github.com/meteoni).
 // ==WindhawkModSettings==
 /*
 - WindowsVersion: win11_26100
-  $name: Windows Version
-  $description: Select your Windows version for correct COM interface IDs. Run "winver" to check your build number.
+  $name: Windows version
   $options:
-    - win10_old: Windows 10 (Build < 20348)
-    - win10_20348: Windows 10 (Build 20348 - 21999)
-    - win11_22000: Windows 11 (Build 22000 - 22482)
-    - win11_22621: Windows 11 (Build 22621/22631/23H2)
-    - win11_26100: Windows 11 (Build 26100+ / 24H2)
-
-- EnableSwitchDesktop: true
-  $name: '[Switch Desktop] Enable'
-  $description: Enable Alt+1-9 (or chosen modifier) to switch desktops
-
-- SwitchDesktopModifier: alt
-  $name: '[Switch Desktop] Modifier'
-  $description: 'Modifier keys for switching to desktop (combined with number keys 1-9). Combine with +: alt, ctrl, shift, win. Examples: alt, ctrl+shift, win+alt'
-
-- EnableMoveWindow: true
-  $name: '[Move Window] Enable'
-  $description: Enable Alt+Shift+1-9 (or chosen modifier) to move windows between desktops
-
-- MoveWindowModifier: alt+shift
-  $name: '[Move Window] Modifier'
-  $description: 'Modifier keys for moving active window to desktop (combined with number keys 1-9). Combine with +: alt, ctrl, shift, win. Examples: alt+shift, ctrl+alt, win+shift'
-
+    - win10_old: Windows 10 (build below 20348)
+    - win10_20348: Windows 10 (build 20348–21999)
+    - win11_22000: Windows 11 (build 22000–22482)
+    - win11_22621: Windows 11 (build 22621/22631/23H2)
+    - win11_26100: Windows 11 (build 26100+ / 24H2)
+- MoveWindowModifier: Alt+Shift
+  $name: Move-window hotkey modifiers
+  $description: "Modifiers for moving windows to numbered and adjacent desktops. Supported tokens: Alt, Ctrl, Shift, Win, joined with +."
+- SwitchDesktopModifier: Alt
+  $name: Switch-desktop hotkey modifiers
+- UtilityModifier: Alt
+  $name: Utility hotkey modifiers
 - FollowMovedWindow: false
-  $name: Follow Moved Window
-  $description: Automatically switch to the target desktop after moving a window
-
+  $name: Switch to destination after moving a window
 - MaxDesktops: 9
-  $name: Maximum Desktops
-  $description: Maximum number of desktops used by numbered hotkeys and previous/next cycling (1-9).
-
+  $name: Maximum desktop index
+  $description: Maximum desktop index targeted by numbered hotkeys and adjacent-desktop cycling.
+- EnableSwitchDesktop: true
+  $name: Enable numbered desktop switching
+- EnableMoveWindow: true
+  $name: Enable numbered and adjacent window movement
 - EnablePrevNextDesktop: true
-  $name: '[Previous/Next/Last-used Desktop] Enable'
-  $description: Enable previous/next-by-index hotkeys and the last-used desktop toggle
-
-- UtilityModifier: alt
-  $name: '[Previous/Next/Last-used Desktop] Modifier'
-  $description: 'Modifier keys for previous/next/last-used desktop hotkeys. Combine with +: alt, ctrl, shift, win. Examples: alt, ctrl+shift, win'
-
-- PrevDesktopKey: "Z"
-  $name: '[Previous/Next/Last-used Desktop] Previous Desktop Key'
-  $description: 'Key to switch to the previous desktop by index (wraps around). Leave blank to disable this hotkey. Examples: Z, A, <, ,, Tab'
-
-- NextDesktopKey: "X"
-  $name: '[Previous/Next/Last-used Desktop] Next Desktop Key'
-  $description: 'Key to switch to the next desktop by index (wraps around). Leave blank to disable this hotkey. Examples: X, E, N, Z, @, ], Enter'
-
-- LastDesktopKey: "Q"
-  $name: '[Previous/Next/Last-used Desktop] Last-used Desktop Key'
-  $description: 'Key to return to the desktop used immediately before the current one. Leave blank to disable this hotkey. Examples: Q, F, ~, !, [, Tab, Space'
-
+  $name: Enable previous/next and last-desktop switching
 - EnablePinWindow: true
-  $name: '[Pin Window] Enable'
-  $description: Enable hotkey to pin/unpin windows to all desktops
-
-- PinKey: "P"
-  $name: '[Pin Window] Key'
-  $description: 'Key to pin/unpin the active window to all desktops. Leave blank to disable this hotkey. Examples: P, W, #, ;, \'
-
+  $name: Enable pin-window hotkey
+- PrevDesktopKey: Z
+  $name: Previous desktop key
+- NextDesktopKey: X
+  $name: Next desktop key
+- MovePrevDesktopKey: Z
+  $name: Move window to previous desktop key
+- MoveNextDesktopKey: X
+  $name: Move window to next desktop key
+- LastDesktopKey: Q
+  $name: Last-used desktop key
+- PinKey: P
+  $name: Pin/unpin window key
 */
 // ==/WindhawkModSettings==
 
@@ -332,19 +336,25 @@ static bool g_hasCurrentDesktop = false;
 // HK_PIN (20): Pin/unpin current window
 // HK_NEXT (21): Switch to next desktop (wrap around)
 // HK_PREV (22): Switch to previous desktop by index (wrap around)
+// HK_MOVE_NEXT (23): Move active window to next desktop by index (wrap around)
+// HK_MOVE_PREV (24): Move active window to previous desktop by index (wrap around)
 enum HotkeyIds {
   HK_MOVE_BASE = 1,
   HK_SWITCH_BASE = 10,
   HK_LAST = 19,
   HK_PIN = 20,
   HK_NEXT = 21,
-  HK_PREV = 22
+  HK_PREV = 22,
+  HK_MOVE_NEXT = 23,
+  HK_MOVE_PREV = 24
 };
 
 static UINT g_prevDesktopKey = 'Z';
 static UINT g_nextDesktopKey = 'X';
 static UINT g_lastDesktopKey = 'Q';
 static UINT g_pinKey = 'P';
+static UINT g_movePrevDesktopKey = 'Z';
+static UINT g_moveNextDesktopKey = 'X';
 
 static bool g_enableSwitchDesktop = true;
 static bool g_enableMoveWindow = true;
@@ -559,6 +569,8 @@ void LoadSettings() {
   g_nextDesktopKey = ReadHotkeySetting(L"NextDesktopKey");
   g_lastDesktopKey = ReadHotkeySetting(L"LastDesktopKey");
   g_pinKey = ReadHotkeySetting(L"PinKey");
+  g_movePrevDesktopKey = ReadHotkeySetting(L"MovePrevDesktopKey");
+  g_moveNextDesktopKey = ReadHotkeySetting(L"MoveNextDesktopKey");
 }
 
 //=============================================================================
@@ -1164,6 +1176,72 @@ bool MoveActiveWindowToDesktopNum(int desktopNum) {
   return success;
 }
 
+// Move the foreground window to the adjacent desktop by desktop index.
+// Direction -1 means previous; +1 means next. The operation wraps around
+// using the same desktop-count policy as SwitchToPreviousDesktop/NextDesktop.
+bool MoveActiveWindowToAdjacentDesktop(int direction) {
+  if (!InitializeVirtualDesktopAPI()) return false;
+
+  HWND hwnd = GetForegroundWindow();
+  if (!hwnd || !IsEligibleWindow(hwnd)) {
+    Wh_Log(L"No eligible active window to move");
+    return false;
+  }
+
+  GUID currentDesktopId = {};
+  if (!GetCurrentDesktopId(&currentDesktopId)) {
+    Wh_Log(L"MoveActiveWindowToAdjacentDesktop: failed to get current desktop");
+    return false;
+  }
+
+  int currentIndex = GetDesktopIndexById(currentDesktopId);
+  if (currentIndex < 0) {
+    Wh_Log(L"MoveActiveWindowToAdjacentDesktop: invalid current desktop index");
+    return false;
+  }
+
+  IObjectArray* desktops = GetDesktops();
+  if (!desktops) {
+    Wh_Log(L"MoveActiveWindowToAdjacentDesktop: failed to get desktops");
+    return false;
+  }
+
+  UINT desktopCount = 0;
+  HRESULT countHr = desktops->GetCount(&desktopCount);
+  desktops->Release();
+  if (FAILED(countHr) || desktopCount == 0) return false;
+
+  int cycleCount = static_cast<int>(desktopCount);
+  if (cycleCount > g_maxDesktops) cycleCount = g_maxDesktops;
+  if (cycleCount <= 1) {
+    Wh_Log(L"MoveActiveWindowToAdjacentDesktop: no adjacent desktop available");
+    return false;
+  }
+
+  // Match the existing previous/next desktop switching behavior.
+  if (currentIndex >= cycleCount) {
+    Wh_Log(L"MoveActiveWindowToAdjacentDesktop: current desktop is outside configured maximum");
+    return false;
+  }
+
+  int targetIndex = (currentIndex + direction + cycleCount) % cycleCount;
+  int targetDesktopNum = targetIndex + 1;
+  HWND movedHwnd = hwnd;
+
+  if (!MoveActiveWindowToDesktopNum(targetDesktopNum)) return false;
+
+  Wh_Log(L"Moved active window to %s desktop %d",
+         direction < 0 ? L"previous" : L"next", targetDesktopNum);
+
+  // Adjacent movement always follows the moved window, regardless of the
+  // optional setting used by numbered window moves.
+  if (!GoToDesktopNum(targetDesktopNum, movedHwnd)) {
+    Wh_Log(L"Window moved, but switching to destination desktop %d failed", targetDesktopNum);
+    return false;
+  }
+  return true;
+}
+
 bool TogglePinWindow() {
   if (!InitializeVirtualDesktopAPI() || !g_pPinnedApps) {
     Wh_Log(L"Pin feature not available");
@@ -1207,6 +1285,22 @@ void RegisterHotkeys(HWND hwnd) {
       BOOL ok = RegisterHotKey(hwnd, HK_MOVE_BASE + i - 1, g_moveModifiers | MOD_NOREPEAT, '0' + i);
       Wh_Log(L"RegisterHotKey MOVE_%d: modifiers=0x%X, vk=0x%X, result=%d, error=%lu",
              i, g_moveModifiers, '0' + i, ok, ok ? 0 : GetLastError());
+    }
+
+    if (g_movePrevDesktopKey) {
+      BOOL ok = RegisterHotKey(hwnd, HK_MOVE_PREV, g_moveModifiers | MOD_NOREPEAT, g_movePrevDesktopKey);
+      Wh_Log(L"RegisterHotKey MOVE_PREV: modifiers=0x%X, vk=0x%X, result=%d, error=%lu",
+             g_moveModifiers, g_movePrevDesktopKey, ok, ok ? 0 : GetLastError());
+    } else {
+      Wh_Log(L"RegisterHotKey MOVE_PREV: disabled by blank key setting");
+    }
+
+    if (g_moveNextDesktopKey) {
+      BOOL ok = RegisterHotKey(hwnd, HK_MOVE_NEXT, g_moveModifiers | MOD_NOREPEAT, g_moveNextDesktopKey);
+      Wh_Log(L"RegisterHotKey MOVE_NEXT: modifiers=0x%X, vk=0x%X, result=%d, error=%lu",
+             g_moveModifiers, g_moveNextDesktopKey, ok, ok ? 0 : GetLastError());
+    } else {
+      Wh_Log(L"RegisterHotKey MOVE_NEXT: disabled by blank key setting");
     }
   }
 
@@ -1264,6 +1358,8 @@ void UnregisterHotkeys(HWND hwnd) {
   UnregisterHotKey(hwnd, HK_NEXT);
   UnregisterHotKey(hwnd, HK_LAST);
   UnregisterHotKey(hwnd, HK_PIN);
+  UnregisterHotKey(hwnd, HK_MOVE_PREV);
+  UnregisterHotKey(hwnd, HK_MOVE_NEXT);
 }
 
 void HandleHotkey(UINT hotkeyId) {
@@ -1289,6 +1385,10 @@ void HandleHotkey(UINT hotkeyId) {
     SwitchToLastDesktop();
   } else if (hotkeyId == HK_PIN) {
     TogglePinWindow();
+  } else if (hotkeyId == HK_MOVE_PREV) {
+    MoveActiveWindowToAdjacentDesktop(-1);
+  } else if (hotkeyId == HK_MOVE_NEXT) {
+    MoveActiveWindowToAdjacentDesktop(1);
   }
 }
 
